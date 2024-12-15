@@ -31,7 +31,7 @@ app.use(morgan('dev'));
 connectToMongoDB();
 
 app.use(cookieParser());
-app.use('/uploads', express.static('https://backendpolleria.onrender.com/uploads'));
+app.use('/uploads', express.static('https://backendpolleria-aumu.onrender.com/uploads'));
 
 const PORT = process.env.PORT || 3000;
 
