@@ -1,0 +1,1 @@
+Aqui se genera el Json Web Token para restringir paso y expirar sesiones.

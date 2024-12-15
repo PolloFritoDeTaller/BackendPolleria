@@ -1,0 +1,4 @@
+Aqui va la estructura de un objeto para nuestra db ejm;
+
+usuario tiene: 
+name, email, password, etc

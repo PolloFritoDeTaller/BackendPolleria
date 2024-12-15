@@ -1,0 +1,4 @@
+Aqui van metodos que usara un modelo de mongoose
+
+ejm: 
+Product -> get, post, update, delete, patch

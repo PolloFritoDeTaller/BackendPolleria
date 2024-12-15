@@ -1,0 +1,1 @@
+Aqui van las rutas de nuestra aplicacion backend hacia los distintos metodos POST, PUT, DDELETE, etc

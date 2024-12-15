@@ -1,0 +1,5 @@
+Aqui va todo lo que se hace antes de llegar a un metodo GET, POST, PUT, delete
+
+ejm:
+
+Verificar el token al querer añadir, eliminar, publicar un producto.
