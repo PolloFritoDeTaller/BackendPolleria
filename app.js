@@ -22,7 +22,7 @@ app.use(cors({/*
     origin: (origin, callback) => {
         callback(null, origin); // Permite cualquier origen
     },*/
-    origin: 'http://localhost:5173',
+    origin: 'https://fronttallersisinfo.onrender.com',
     credentials: true, // Access to credentials
 }));
 
