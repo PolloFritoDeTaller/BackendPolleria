@@ -22,7 +22,7 @@ app.use(cors({/*
     origin: (origin, callback) => {
         callback(null, origin); // Permite cualquier origen
     },*/
-    origin: 'https://fronttallersisinfo.onrender.com',
+    origin: 'https://frontendpolleria.onrender.com',
     credentials: true, // Access to credentials
 }));
 
@@ -31,7 +31,7 @@ app.use(morgan('dev'));
 connectToMongoDB();
 
 app.use(cookieParser());
-app.use('/uploads', express.static('./uploads'));
+app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT || 3000;
 
