@@ -33,6 +33,14 @@ connectToMongoDB();
 app.use(cookieParser());
 app.use('/api/uploads', express.static('uploads'));
 
+// Sirve los archivos estáticos de la carpeta 'dist' generada por Vite
+app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
+
+// Redirige todas las demás rutas al archivo index.html para que React Router maneje la navegación
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.use('/api', authRouter);
