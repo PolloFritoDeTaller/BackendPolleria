@@ -2,9 +2,6 @@ import express from 'express'
 import cors from 'cors';
 import dotenv from 'dotenv'
 import morgan from 'morgan';
-import path from 'path';
-import { fileURLToPath } from 'url';  // Importar fileURLToPath
-import { dirname } from 'path';  // Importar dirname
 import connectToMongoDB from './db.js';
 import branchsRouter from './routes/branch.routes.js';
 import productsBranchRouter from './routes/product.branch.routes.js';
@@ -16,10 +13,6 @@ import inventoryBranchRouter from './routes/inventory.branch.routes.js';
 import ingredientBranchRouter from './routes/ingredient.branch.routes.js';
 
 dotenv.config();
-
-// Obtener el directorio actual de __dirname en un módulo ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -39,14 +32,6 @@ connectToMongoDB();
 
 app.use(cookieParser());
 app.use('/api/uploads', express.static('uploads'));
-
-// Sirve los archivos estáticos de la carpeta 'dist' generada por Vite
-app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
-
-// Redirige todas las demás rutas al archivo index.html para que React Router maneje la navegación
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
-});
 
 const PORT = process.env.PORT || 3000;
 
