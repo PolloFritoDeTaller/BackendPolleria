@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv'
 import morgan from 'morgan';
 import path from 'path';
+import { fileURLToPath } from 'url';  // Importar fileURLToPath
+import { dirname } from 'path';  // Importar dirname
 import connectToMongoDB from './db.js';
 import branchsRouter from './routes/branch.routes.js';
 import productsBranchRouter from './routes/product.branch.routes.js';
@@ -14,6 +16,10 @@ import inventoryBranchRouter from './routes/inventory.branch.routes.js';
 import ingredientBranchRouter from './routes/ingredient.branch.routes.js';
 
 dotenv.config();
+
+// Obtener el directorio actual de __dirname en un módulo ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
