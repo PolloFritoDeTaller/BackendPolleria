@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors';
 import dotenv from 'dotenv'
 import morgan from 'morgan';
+import path from 'path';
 import connectToMongoDB from './db.js';
 import branchsRouter from './routes/branch.routes.js';
 import productsBranchRouter from './routes/product.branch.routes.js';
