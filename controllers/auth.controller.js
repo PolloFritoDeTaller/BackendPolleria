@@ -2,18 +2,20 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import bcrypt from 'bcrypt';
 
-export const SECRET_KEY = 'secret';  
+export const SECRET_KEY = 'secret';
 export const REFRESH_SECRET_KEY = 'secret';
 
+// Función para generar tokens
 const generateTokens = (user) => {
   const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: '1h' }); // Token que expira en 1 hora
   const refreshToken = jwt.sign({ id: user._id }, REFRESH_SECRET_KEY, { expiresIn: '7d' }); // Refresh token que expira en 7 días
   return { token, refreshToken };
 };
 
+// Ruta para registrar un usuario
 export const register = async (req, res) => {
   const { name, email, password, role, university, phone, position } = req.body;
-  
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -40,7 +42,7 @@ export const register = async (req, res) => {
 // Ruta para login
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  
+
   try {
     const foundUser = await User.findOne({ email: email });
     if (!foundUser) return res.status(401).json({ message: "Email o contraseña incorrectos" });
@@ -49,13 +51,20 @@ export const login = async (req, res) => {
     if (!coincidence) return res.status(401).json({ message: "Email o contraseña incorrectos" });
 
     const { token, refreshToken } = generateTokens(foundUser);
-    console.log(token, refreshToken);
+
+    // Guardar tokens en cookies
     res.cookie('token', token, {
-      expires: new Date(Date.now() + 3600000),  // 1 hora
+      httpOnly: true, // No se puede acceder desde JavaScript
+      secure: process.env.NODE_ENV === 'production', // Solo se enviará por HTTPS
+      sameSite: 'Strict', // Se recomienda para evitar problemas de CSRF
+      maxAge: 3600000 // 1 hora en milisegundos
     });
-    
+
     res.cookie('refreshToken', refreshToken, {
-      expires: new Date(Date.now() + 604800000),  // 7 días
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict',
+      maxAge: 604800000 // 7 días en milisegundos
     });
 
     res.status(200).json({ message: "Login exitoso", foundUser });
@@ -76,6 +85,28 @@ export const logout = (req, res) => {
   }
 };
 
+// Ruta para verificar el token
+export const verifyToken = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) return res.status(403).json({ message: "No se proporcionó token" });
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const userId = decoded.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    res.status(200).json({ message: "Token es válido", user });
+  } catch (error) {
+    res.status(403).json({ message: "Token inválido", error: error.message });
+  }
+};
+
+// Ruta para refrescar el token
 export const refreshToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
@@ -90,11 +121,18 @@ export const refreshToken = async (req, res) => {
     // Generar un nuevo token
     const { token, refreshToken: newRefreshToken } = generateTokens(foundUser);
 
+    // Guardar nuevos tokens en cookies
     res.cookie('token', token, {
-      expires: new Date(Date.now() + 3600000),  // 1 hora
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict',
+      maxAge: 3600000 // 1 hora
     });
     res.cookie('refreshToken', newRefreshToken, {
-      expires: new Date(Date.now() + 604800000),  // 7 días
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict',
+      maxAge: 604800000 // 7 días
     });
 
     res.status(200).json({ message: 'Token renovado con éxito' });
@@ -103,75 +141,48 @@ export const refreshToken = async (req, res) => {
   }
 };
 
-export const verifyToken = async (req, res) => {
-  const token = req.cookies.token;
-
-  if (!token) return res.status(403).json({ message: "No se proporcionó token" });
+// Ruta para verificar la contraseña
+export const verifyPassword = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    // Decodifica el token para obtener el ID del usuario
-    const decoded = jwt.verify(token, SECRET_KEY);
-    const userId = decoded.id; // Ajusta si el campo es diferente en tu token
+    const foundUser = await User.findOne({ email: email });
 
-    // Busca al usuario en la base de datos
-    const user = await User.findById(userId); // Cambia por la consulta adecuada para tu DB
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
+    if (!foundUser) return res.status(401).json({ message: "Usuario no encontrado" });
 
-    // Retorna el mensaje y los datos del usuario
-    res.status(200).json({ message: "Token es válido", user });
+    const match = await bcrypt.compare(password, foundUser.password);
+
+    if (!match) return res.status(401).json({ message: "Contraseña incorrecta" });
+
+    res.json({ message: "Autenticación exitosa", user: foundUser });
+
   } catch (error) {
-    res.status(403).json({ message: "Token inválido", error: error.message });
+    res.status(500).json({ message: "Error en el servidor", error: error.message });
   }
 };
 
-// Función para verificar la contraseña
-export const verifyPassword = async (req, res) => {
-    const { email, password } = req.body; 
-
-    try {
-        const foundUser = await User.findOne({ email: email });
-
-        if (!foundUser) return res.status(401).json({ message: "Usuario no encontrado" });
-
-        const match = await bcrypt.compare(password, foundUser.password);
-
-        if (!match) return res.status(401).json({ message: "Contraseña incorrecta" });
-
-        res.json({ message: "Autenticación exitosa", user: foundUser });
-
-    } catch (error) {
-        res.status(500).json({ message: "Error en el servidor", error: error.message });
-    }
-};
-
-// Función para actualizar la información del usuario, incluyendo el rol
+// Ruta para actualizar la información del usuario, incluyendo el rol
 export const updateUser = async (req, res) => {
   const { userId, name, email, phone, university, position, role } = req.body;
 
   try {
-    // Buscar al usuario en la base de datos
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Actualizar los datos del usuario
     user.name = name || user.name;
     user.email = email || user.email;
     user.phone = phone || user.phone;
     user.university = university || user.university;
     user.position = position || user.position;
-    user.role = role || user.role;  // Actualizar el rol
+    user.role = role || user.role;
 
-    // Guardar los cambios
     await user.save();
 
     res.status(200).json({ message: 'Usuario actualizado con éxito', user });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: 'Error al actualizar el usuario' });
   }
 };
