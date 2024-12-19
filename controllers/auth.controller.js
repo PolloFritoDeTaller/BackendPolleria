@@ -52,13 +52,8 @@ export const login = async (req, res) => {
 
     const { token, refreshToken } = generateTokens(foundUser);
     console.log(token, refreshToken);
-    res.cookie('token', token, {
-      expires: new Date(Date.now() + 3600000),  // 1 hora
-    });
-    
-    res.cookie('refreshToken', refreshToken, {
-      expires: new Date(Date.now() + 604800000),  // 7 días
-    });
+    res.cookie('token', token);
+    res.cookie('refreshToken', refreshToken);
 
     res.status(200).json({ message: "Login successful", foundUser });
   } catch (error) {
@@ -92,12 +87,8 @@ export const refreshToken = async (req, res) => {
     // Generar un nuevo token
     const { token, refreshToken: newRefreshToken } = generateTokens(foundUser);
 
-    res.cookie('token', token, {
-      expires: new Date(Date.now() + 3600000),  // 1 hora
-    });
-    res.cookie('refreshToken', newRefreshToken, {
-      expires: new Date(Date.now() + 604800000),  // 7 días
-    });
+    res.cookie('token', token); // 1 hora
+    res.cookie('refreshToken', newRefreshToken); // 7 días
 
     res.status(200).json({ message: 'Token refreshed successfully' });
   } catch (error) {
