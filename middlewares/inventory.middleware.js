@@ -6,7 +6,7 @@ const validateDailyInventory = async (req, res, next) => {
     try {
         const { nameBranch } = req.body;
         
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({
                 success: false,
