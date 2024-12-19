@@ -100,7 +100,7 @@ export const getInventoryById = async (req, res) => {
 
         // Primero buscar la sucursal
         const branch = await Branch.findOne({ 
-            nameBranch: nameBranch.toLowerCase(),
+            nameBranch: nameBranch,
             inventories: id  // Verifica que el inventario pertenezca a esta sucursal
         });
 
@@ -145,7 +145,7 @@ export const getDailyInventoryByBranch = async (req, res) => {
     try {
         const { nameBranch } = req.params;
         
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() })
+        const branch = await Branch.findOne({ nameBranch: nameBranch })
             .populate('inventories');
 
         if (!branch) {
@@ -173,7 +173,7 @@ export const getCurrentDayInventoryByBranch = async (req, res) => {
     try {
         const { nameBranch } = req.params;
 
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ 
                 success: false, 
@@ -221,7 +221,7 @@ export const getInventoryByDateAndBranch = async (req, res) => {
     try {
         const { date, nameBranch } = req.params;
         
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ 
                 success: false, 
@@ -277,7 +277,7 @@ export const updateBranchInventory = async (req, res) => {
             });
         }
 
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ 
                 success: false, 
@@ -324,7 +324,7 @@ export const getInventoryStatsByBranch = async (req, res) => {
     try {
         const { nameBranch } = req.params;
 
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ 
                 success: false, 
