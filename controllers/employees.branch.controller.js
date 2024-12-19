@@ -6,14 +6,7 @@ import bcrypt from 'bcrypt';
 
 // Registrar un nuevo empleado en una sucursal
 export const registerEmployeeToBranch = async (req, res) => {
-    const { branchName, name, ci, phone, email, password, contractStart, contractEnd, salary, role } = req.body;
-    const photo = req.file ? req.file.path : null;
-    
-    if (!req.file) {
-        console.error("Error: No se subió ninguna imagen.");
-    } else {
-        console.log("Imagen subida exitosamente:", req.file.filename);
-    }
+    const { branchName, name, ci, phone, email, password, contractStart, contractEnd, salary, role, photo } = req.body;
     
     // Verificar que la contraseña no esté vacía
     if (!password) {
@@ -38,7 +31,7 @@ export const registerEmployeeToBranch = async (req, res) => {
             contractEnd,
             salary,
             role,
-            photo: req.file ? req.file.filename : null,
+            photo,
         });
 
         const savedEmployee = await newEmployee.save();
@@ -170,8 +163,7 @@ export const getEmployeesWithFilters = async (req, res) => {
 // Controlador para editar un empleado en una sucursal
 export const editEmployeeInBranch = async (req, res) => {
     const { id } = req.params; // ID del empleado a editar
-    const { name, ci, phone, email, contractStart, contractEnd, salary, role } = req.body;
-    const photo = req.file ? req.file.filename : null; // Nueva foto si se sube
+    const { name, ci, phone, email, contractStart, contractEnd, salary, role, photo } = req.body;
 
     try {
         // Verificar si el empleado existe
