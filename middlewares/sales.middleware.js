@@ -87,7 +87,7 @@ export const processSaleIngredients = async function(req, res, next) {
         const { nameBranch } = req.body;
         
         // Verificar la sucursal
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() })
+        const branch = await Branch.findOne({ nameBranch: nameBranch })
             .populate('inventories');
 
         if (!branch) {

@@ -6,7 +6,7 @@ export const addSaleToBranch = async (req, res) => {
     try {
         const { nameBranch, clientName, clientCI, products, discount = 0 } = req.body;
 
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ success: false, message: 'Sucursal no encontrada' });
         }
@@ -94,7 +94,7 @@ export const getTodaySalesByBranch = async (req, res) => {
         console.log(nameBranch)
 
         // Buscar la sucursal por nombre
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ success: false, message: 'Sucursal no encontrada' });
         }
@@ -142,7 +142,7 @@ export const getSalesByHourDB = async (req, res) => {
 
     try {
         // Buscar la sucursal por nombre
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ success: false, message: 'Sucursal no encontrada' });
         }
@@ -176,7 +176,7 @@ export const getSalesByDateDB = async (req, res) => {
     endDate.setDate(startDate.getDate() + 1);
 
     try {
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ success: false, message: 'Sucursal no encontrada' });
         }
@@ -203,7 +203,7 @@ export const getSalesByDateDB = async (req, res) => {
 export const getWeeklyProfitsByBranch = async (req, res) => {
     try {
         const { nameBranch } = req.params;
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ success: false, message: 'Sucursal no encontrada' });
         }

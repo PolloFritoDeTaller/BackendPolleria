@@ -22,7 +22,7 @@ export const registerIngredientToBranch = async (req, res) => {
         }
 
         // Buscar la sucursal
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({
                 success: false,
@@ -73,7 +73,7 @@ export const getIngredientsByBranch = async (req, res) => {
     try {
         const { nameBranch } = req.params;
 
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() })
+        const branch = await Branch.findOne({ nameBranch: nameBranch })
             .populate('ingredients');
 
         if (!branch) {
@@ -112,7 +112,7 @@ export const updateIngredientInBranch = async (req, res) => {
         }
 
         // Buscar la sucursal
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({
                 success: false,
@@ -172,7 +172,7 @@ export const removeIngredientFromBranch = async (req, res) => {
         const { nameBranch, ingredientId } = req.body;
 
         // Buscar la sucursal
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({
                 success: false,
@@ -196,7 +196,7 @@ export const removeIngredientFromBranch = async (req, res) => {
         res.json({
             success: true,
             message: 'Ingrediente eliminado exitosamente',
-            branch: await Branch.findOne({ nameBranch: nameBranch.toLowerCase() })
+            branch: await Branch.findOne({ nameBranch: nameBranch })
                 .populate('ingredients')
         });
     } catch (error) {
@@ -221,7 +221,7 @@ export const updateIngredientStock = async (req, res) => {
         }
 
         // Verificar sucursal
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({
                 success: false,
