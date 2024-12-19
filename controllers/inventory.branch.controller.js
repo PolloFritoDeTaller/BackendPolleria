@@ -16,7 +16,7 @@ export const addInventoryToBranch = async (req, res) => {
         }
 
         // Buscar la sucursal
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ 
                 success: false, 
