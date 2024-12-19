@@ -16,15 +16,29 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.json());
-
-app.use(cors({/*
-    origin: (origin, callback) => {
-        callback(null, origin); // Permite cualquier origen
-    },*/
+app.use(cors({
     origin: 'https://frontendpolleria.onrender.com',
-    credentials: true, // Access to credentials
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
+    credentials: true,
+    exposedHeaders: ['set-cookie']
 }));
+
+// Middleware para configurar headers manualmente en caso de que CORS falle
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://frontendpolleria.onrender.com');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Credentials', true);
+    
+    // Handle OPTIONS method
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
+app.use(express.json());
 
 app.use(morgan('dev'));
 
