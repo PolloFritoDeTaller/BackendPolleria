@@ -16,7 +16,8 @@ export const registerEmployeeToBranch = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
-        const branch = await Branch.findOne({ nameBranch: branchName.toLowerCase() });
+        // Eliminado el .toLowerCase() para mantener el case sensitivity
+        const branch = await Branch.findOne({ nameBranch: branchName });
         if (!branch) {
             return res.status(404).json({ success: false, message: 'Sucursal no encontrada' });
         }
