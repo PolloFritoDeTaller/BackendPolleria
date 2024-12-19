@@ -29,7 +29,6 @@ export const registerEmployee = async (req, res) => {
     try {
         const savedEmployee = await newEmployee.save();
         res.json(savedEmployee);
-        register(req, res);
     } catch (error) {
         res.status(500).json({ error: 'Error al registrar empleado', details: error });
     }
