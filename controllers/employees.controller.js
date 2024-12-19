@@ -1,5 +1,6 @@
 import Employee from '../models/employees.model.js';
 import bcrypt from 'bcrypt';
+import { register } from './auth.controller.js';
 
 // Registrar un nuevo empleado
 export const registerEmployee = async (req, res) => {
@@ -27,24 +28,8 @@ export const registerEmployee = async (req, res) => {
 
     try {
         const savedEmployee = await newEmployee.save();
-        // res.json(savedEmployee);
-        
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-          return res.status(400).json({ message: "El usuario ya existe." });
-        }
-    
-        const newUser = new User({
-          name,
-          email,
-          password, // La contraseña se cifrará automáticamente antes de guardarse
-          role,
-          phone,
-          position
-        });
-    
-        await newUser.save();
-        res.status(201).json({ message: "Usuario registrado exitosamente", user: newUser, savedEmployee: savedEmployee });
+        res.json(savedEmployee);
+        register(req, res);
     } catch (error) {
         res.status(500).json({ error: 'Error al registrar empleado', details: error });
     }
