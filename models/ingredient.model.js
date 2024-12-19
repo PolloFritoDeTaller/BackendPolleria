@@ -3,8 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 const ingredientModel = new Schema({
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   unit: {
     type: String,
