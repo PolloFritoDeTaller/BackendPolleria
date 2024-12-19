@@ -4,9 +4,8 @@ import Product from '../models/product.model.js';
 // Controlador para agregar un producto a una sucursal
 export const addProductToBranch = async (req, res) => {
     try {
-        const { nameBranch, nameProduct, price, id, description } = req.body;
+        const { nameBranch, nameProduct, price, id, description, image } = req.body;
         console.log(nameBranch, nameProduct, price, id, description);
-        const image = req.file ? req.file.filename : null;
 
         const branch = await Branch.findOne({ nameBranch: nameBranch });
 
@@ -77,8 +76,7 @@ export const getProductsByBranch = async (req, res) => {
 export const editProductInBranch = async (req, res) => {
     try {
         const { id } = req.params;
-        const { id: newId, nameProduct, price, description } = req.body;
-        const image = req.file ? req.file.filename : null;
+        const { id: newId, nameProduct, price, description, image } = req.body;
 
         const existingProduct = await Product.findById(id);
         if (!existingProduct) {
