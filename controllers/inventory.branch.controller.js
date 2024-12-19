@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 export const addInventoryToBranch = async (req, res) => {
     try {
         const { nameBranch, employees, observations } = req.body;
+        console.log("nameBranch recibido:", nameBranch);
 
         // Validaciones básicas
         if (!nameBranch || !employees) {
