@@ -146,14 +146,8 @@ export const editBranch = async (req, res) => {
 
 export const addImageToBranches = async (req, res) => {
   try {
-    console.log("hola");
-    // La imagen se encuentra en req.file
-    const imageUrl = req.file ? req.file.path : null;  // Obtener la ruta de la imagen subida
-    const branchIds = JSON.parse(req.body.branchIds);  // Obtener branchIds desde req.body
+    const { imageUrl, branchIds } = req.body;  // Ahora recibimos directamente la URL
 
-    console.log(imageUrl, branchIds);
-
-    // Verificar si la imagen o las sucursales están presentes
     if (!imageUrl || !branchIds || branchIds.length === 0) {
       return res.status(400).json({
         success: false,
@@ -163,14 +157,11 @@ export const addImageToBranches = async (req, res) => {
 
     let branchesToUpdate;
     if (branchIds.length === 1 && branchIds[0] === 'all') {
-      // Si el array tiene 'all', actualizamos todas las sucursales
       branchesToUpdate = await Branch.find();
     } else {
-      // Si hay sucursales seleccionadas, actualizamos solo esas
       branchesToUpdate = await Branch.find({ _id: { $in: branchIds } });
     }
 
-    // Asegurarse de que se encontraron sucursales para actualizar
     if (branchesToUpdate.length === 0) {
       return res.status(404).json({
         success: false,
@@ -178,13 +169,11 @@ export const addImageToBranches = async (req, res) => {
       });
     }
 
-    // Agregar la imagen a cada sucursal seleccionada
     for (let branch of branchesToUpdate) {
       branch.images.push({ url: imageUrl });
-      await branch.save(); // Guardar la sucursal actualizada
+      await branch.save();
     }
 
-    // Responder con éxito
     res.status(200).json({
       success: true,
       message: `Imagen agregada exitosamente a ${branchesToUpdate.length} sucursales.`,
