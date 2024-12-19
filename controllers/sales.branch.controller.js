@@ -67,7 +67,7 @@ export const getSalesByBranch = async (req, res) => {
         const { nameBranch } = req.body;
 
         // Buscar la sucursal por nombre
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() })
+        const branch = await Branch.findOne({ nameBranch: nameBranch})
             .populate('sales'); // Esto traerá las ventas asociadas a la sucursal
 
         if (!branch) {

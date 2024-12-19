@@ -66,7 +66,10 @@ export const getEmployeesByBranch = async (req, res) => {
     const { branchName } = req.params;
 
     try {
-        const branch = await Branch.findOne({ nameBranch: branchName.toLowerCase() }).populate('employees');
+        const branch = await Branch.findOne({
+            nameBranch: new RegExp(`^${branchName}$`, 'i')
+        }).populate('employees');
+        
         if (!branch) {
             return res.status(404).json({ success: false, message: 'Sucursal no encontrada' });
         }
