@@ -142,7 +142,7 @@ export const getSalesByHourDB = async (req, res) => {
 
     try {
         // Buscar la sucursal por nombre
-        const branch = await Branch.findOne({ nameBranch: nameBranch.toLowerCase() });
+        const branch = await Branch.findOne({ nameBranch: nameBranch });
         if (!branch) {
             return res.status(404).json({ success: false, message: 'Sucursal no encontrada' });
         }
